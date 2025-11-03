@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart PDF Generator</title>
+
+  <!-- TinyMCE -->
+  <script src="https://cdn.jsdelivr.net/npm/tinymce@7.0.0/tinymce.min.js"></script>
+
+  <!-- html2pdf.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f5f7fb;
+      margin: 0;
+      padding: 0;
+      color: #1e293b;
+    }
+
+    /* 🔹 Header */
+    header {
+     background: linear-gradient(90deg, #1e3a8a, #2563eb);
+      color: white;
+      text-align: center;
+      padding: 5px 1px;
+      border-top-left-radius: 60px;
+      border-top-right-radius: 60px;
+
+      box-shadow: 0 -5px px rgba(37,99,235,0.3);
+    }
+
+    header h1 {
+      font-size: 34px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 17px;
+    }
+
+    /* 🔹 Container */
+    .container {
+      background: #fff;
+      width: 90%;
+      max-width: 1000px;
+      margin: 50px auto;
+      border-radius: 14px;
+      padding: 40px 50px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .container:hover {
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    }
+
+    /* 🔹 Form Inputs */
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    input[type="text"], input[type="date"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.25);
+    }
+
+    .header-info {
+      text-align: right;
+      font-size: 16px;
+      color: #334155;
+      margin: 25px 0 35px;
+      font-weight: 500;
+    }
+
+    #website a {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+
+    /* 🔹 Editor */
+    .tox-tinymce {
+      border-radius: 14px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    /* 🔹 Button */
+    #generatePDF {
+      display: block;
+      margin: 40px auto 0;
+      padding: 14px 40px;
+      background: linear-gradient(90deg, #2563eb, #1e3a8a);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #generatePDF:hover {
+      background: linear-gradient(90deg, #1e3a8a, #1e40af);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(37,99,235,0.3);
+    }
+
+    /* 🔹 Footer */
+    footer {
+      background: linear-gradient(90deg, #1e3a8a, #2563eb);
+      color: white;
+      text-align: center;
+      padding: 25px 10px;
+      margin-top: 50px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      box-shadow: 0 -5px 15px rgba(37,99,235,0.3);
+    }
+
+    footer p {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    footer span {
+      color: #facc15;
+      font-weight: 600;
+    }
+
+    footer .icons {
+      margin-top: 10px;
+    }
+
+    footer .icons i {
+      font-size: 18px;
+      margin: 0 8px;
+      color: #facc15;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    footer .icons i:hover {
+      color: #fde047;
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔹 HEADER -->
+  <header>
+    <h1>Smart PDF Generator</h1>
+    <p>Convert articles, summaries, and documents into Word-style PDFs instantly</p>
+    <span class="powered">⚡ Powered by <strong>Aditya Tools</strong></span>
+
+  </header>
+
+  <!-- 🔹 MAIN CONTENT -->
+  <div class="container" id="pdf-content">
+
+    <div class="form-group">
+      <label for="websiteInput">🌐 Website Link:</label>
+      <input type="text" id="websiteInput" placeholder="e.g. https://indianexpress.com/article/news/" />
+    </div>
+
+    <div class="form-group">
+      <label for="authorInput">✍️ Author Name:</label>
+      <input type="text" id="authorInput" placeholder="Enter author name" />
+    </div>
+
+    <div class="form-group">
+      <label for="dateInput">📅 Publish Date:</label>
+      <input type="date" id="dateInput" />
+    </div>
+
+    <div class="header-info">
+      <span id="website">indianexpress.com</span> /
+      <strong id="author">Puja Tayal</strong> /
+      <strong id="date">29 October 2025</strong>
+    </div>
+
+    <label><b>📝 Summary / Article Content:</b></label>
+    <textarea id="editor"></textarea>
+
+    <button id="generatePDF">📄 Generate PDF</button>
+  </div>
+
+  <!-- 🔹 FOOTER -->
+  <footer>
+    <p>© 2025 <span>Aditya Singh</span> | Designed with 💙 | Smart PDF Generator</p>
+  </footer>
+  <script>
+    const extractDomain = (url) => {
+      try {
+        const hostname = new URL(url).hostname;
+        return hostname.replace("www.", "");
+      } catch {
+        return url;
+      }
+    };
+
+    tinymce.init({
+      selector: "#editor",
+      height: 800,
+      menubar: true,
+      plugins:
+        "print preview paste importcss searchreplace autolink autosave save code visualblocks fullscreen image link media table lists wordcount",
+      toolbar:
+        "undo redo | fontfamily fontsize | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent | image link table | removeformat | fullscreen preview print",
+      branding: false,
+      paste_data_images: true,
+      automatic_uploads: true,
+      convert_urls: false,
+      content_style: `
+        body { font-family: Calibri, sans-serif; font-size: 14pt; line-height: 1.7; color: #000; }
+        img { max-width: 100%; height: auto; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+      `,
+    });
+
+    document.getElementById("websiteInput").addEventListener("input", (e) => {
+      const domain = extractDomain(e.target.value);
+      document.getElementById("website").innerHTML =
+        `<a href="${e.target.value}" target="_blank">${domain}</a>`;
+    });
+
+    document.getElementById("authorInput").addEventListener("input", (e) => {
+      document.getElementById("author").textContent = e.target.value || "Author";
+    });
+
+    document.getElementById("dateInput").addEventListener("input", (e) => {
+      const inputDate = new Date(e.target.value);
+      if (!isNaN(inputDate)) {
+        document.getElementById("date").textContent = inputDate.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+      }
+    });
+
+    document.getElementById("generatePDF").addEventListener("click", async () => {
+      const content = tinymce.get("editor").getContent();
+      const tempDiv = document.createElement("div");
+      tempDiv.style.padding = "30px";
+      tempDiv.style.background = "white";
+      tempDiv.innerHTML = `
+        <div style="text-align:right; font-size:15px;">
+          ${document.getElementById("website").innerHTML} /
+          <b>${document.getElementById("author").textContent}</b> /
+          <b>${document.getElementById("date").textContent}</b>
+        </div>
+        <h3 style="border-bottom:3px solid #2563eb;">SUMMARY</h3>
+        <div style="margin-top:15px; line-height:1.8;">${content}</div>
+      `;
+      document.body.appendChild(tempDiv);
+
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: "Smart_Summary.pdf",
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: { scale: 3, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+      };
+
+      await html2pdf().set(opt).from(tempDiv).save();
+      tempDiv.remove();
+    });
+  </script>
+</body>
+</html>
